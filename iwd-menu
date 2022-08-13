@@ -1,4 +1,4 @@
-/bin/sh
+#! /bin/sh
 
 menu="dmenu -l 10"
 
@@ -7,3 +7,4 @@ if [ "$1" = "-m" -o "$1" = "--menu" ]; then
     menu="$@"
 fi
 
+echo $menu
