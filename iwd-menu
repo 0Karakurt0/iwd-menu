@@ -7,4 +7,25 @@ if [ "$1" = "-m" -o "$1" = "--menu" ]; then
     menu="$@"
 fi
 
-echo $menu
+stantions="$(iwctl device list | sed -n '5,${s/^ \+//; s/ \+/ /gp}')"
+if [ $(echo $stations | wc -l) -eq 1 ]; then
+    #assuming that no device named "No" can be created
+    station="$(echo $stations | cut --delimiter=' ' --fields=1)"
+    case "$station" in
+        No) ;;
+        *)  ;;
+    esac
+else
+    station_names="$(echo $stations | cut --delimiter=' ' --fields=1)"
+    station=$(echo "$station_names" | "$menu" -p "Select the station:")
+fi
+
+
+
+
+
+
+
+
+
+devices="$(iwctl device list | sed -n '5,$s/ \+/ /gp')"
