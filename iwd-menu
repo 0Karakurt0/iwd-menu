@@ -12,15 +12,23 @@ if [ $(echo $stations | wc -l) -eq 1 ]; then
     #assuming that no device named "No" can be created
     station="$(echo $stations | cut --delimiter=' ' --fields=1)"
     case "$station" in
-        No) devices="$(iwctl device list | sed -n '5,$s/ \+/ /gp')"
-            device="$(echo "$devices" | $menu -p "Select device")"
-            dev_name="$(echo "$device" | cut --delimiter=' ' --fields=1)"
-
+        No) devices="$( iwctl device list | sed -n '5,${s/^ \+//; s/ \+/ /gp}')"
+            device="$(  echo "$devices" | $menu -p "Select device")"
+            echo $device
+            dev_name="$(echo "$device"  | cut --delimiter=' ' --fields=1)"
+            echo $dev_name
+            action=$(   echo "Station\nAcces Point\nAD-HOC" |\
+                        $menu -p 'Select mode')
+            iwctl device $dev_name set-property Powered on
+            case $action in
+                Station) iwctl device $dev_name set-property Mode station;;
+                "Acces Point") iwctl device $dev_name set-property Mode ap;;
+                AD-HOC) iwctl device $dev_name set-property Mode ad-hoc;;
+            esac
             ;;
-        *)  ;;
     esac
 else
-    station=$(echo "$stations" | $menu -p "Select the station:")
+    station=$(echo "$stations" | $menu -p "Select the station:"| cut --delimiter=' ' --fields=1)
 fi
 
 
