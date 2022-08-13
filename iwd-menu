@@ -1,0 +1,9 @@
+/bin/sh
+
+menu="dmenu -l 10"
+
+if [ "$1" = "-m" -o "$1" = "--menu" ]; then
+    shift
+    menu="$@"
+fi
+
