@@ -7,17 +7,20 @@ if [ "$1" = "-m" -o "$1" = "--menu" ]; then
     menu="$@"
 fi
 
-stantions="$(iwctl device list | sed -n '5,${s/^ \+//; s/ \+/ /gp}')"
+stations="$(iwctl station list | sed -n '5,${s/^ \+//; s/ \+/ /gp}')"
 if [ $(echo $stations | wc -l) -eq 1 ]; then
     #assuming that no device named "No" can be created
     station="$(echo $stations | cut --delimiter=' ' --fields=1)"
     case "$station" in
-        No) ;;
+        No) devices="$(iwctl device list | sed -n '5,$s/ \+/ /gp')"
+            device="$(echo "$devices" | $menu -p "Select device")"
+            dev_name="$(echo "$device" | cut --delimiter=' ' --fields=1)"
+
+            ;;
         *)  ;;
     esac
 else
-    station_names="$(echo $stations | cut --delimiter=' ' --fields=1)"
-    station=$(echo "$station_names" | "$menu" -p "Select the station:")
+    station=$(echo "$stations" | $menu -p "Select the station:")
 fi
 
 
@@ -28,4 +31,4 @@ fi
 
 
 
-devices="$(iwctl device list | sed -n '5,$s/ \+/ /gp')"
+
